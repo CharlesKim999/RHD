@@ -1,13 +1,10 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { Button, Fade } from "@mui/material";
 import Defense from "./component/defense";
 import { GameType } from "./type";
 
 function App() {
-  const [count, setCount] = useState(0);
   const [type, setType] = useState<GameType | "">("");
 
   const handleClick = (i: GameType) => {
