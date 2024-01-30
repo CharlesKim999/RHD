@@ -1,43 +1,61 @@
 import { Button, Fade, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { GameType } from "../type";
-import { Japanese, indexKey, korean } from "../constant/word";
+import { GameType, JapaneseType } from "../type";
+import { hiragana, indexKey, katakana, korean } from "../constant/word";
 
 type Props = {
-  type: GameType | "";
+  type: JapaneseType;
+  gameType: GameType | "";
   close: React.Dispatch<React.SetStateAction<GameType | "">>;
 };
 
 const Defense = (props: Props) => {
-  const { type } = props;
+  const { type, gameType } = props;
   const [defenseType, setDefenseType] = useState("");
   const [renderValue, setRenderValue] = useState(["", ""]);
   const [renderIndex, setRenderIndex] = useState(0);
   const randomIndex = () => Math.floor(Math.random() * 46);
   const close = props.close;
 
-  const setNewValue = () => {
-    const v = (randomIndex() + 1) as indexKey;
+  const getTable = () => {
     if (type === "hiragana") {
-      setRenderValue([Japanese[v], korean[v]]);
-    } else if (type === "hangul") {
-      setRenderValue([korean[v], Japanese[v]]);
-    } else if (type === "random") {
+      return hiragana;
+    } else if (type === "katakana") {
+      return katakana;
+    } else {
       const rand = Math.floor(Math.random() * 100);
       if (rand < 50) {
-        setRenderValue([korean[v], Japanese[v]]);
+        console.log("hiragana");
+        return hiragana;
       } else {
-        setRenderValue([Japanese[v], korean[v]]);
+        console.log("katakana");
+        return katakana;
+      }
+    }
+  };
+  const setNewValue = () => {
+    const v = (randomIndex() + 1) as indexKey;
+    const table = getTable();
+    if (gameType === "japanese") {
+      setRenderValue([table[v], korean[v]]);
+    } else if (gameType === "hangul") {
+      setRenderValue([korean[v], table[v]]);
+    } else if (gameType === "random") {
+      const rand = Math.floor(Math.random() * 100);
+      if (rand < 50) {
+        setRenderValue([korean[v], table[v]]);
+      } else {
+        setRenderValue([table[v], korean[v]]);
       }
     }
   };
 
   useEffect(() => {
-    setDefenseType(type);
-    if (type !== "") {
+    setDefenseType(gameType);
+    if (gameType !== "") {
       setNewValue();
     }
-  }, [type]);
+  }, [gameType]);
 
   const open = () => {
     if (defenseType === "") {
@@ -85,7 +103,12 @@ const Defense = (props: Props) => {
             </div>
           </Fade>
         </div>
-        <Button onClick={() => closeAll()} variant="contained" fullWidth>
+        <Button
+          color="warning"
+          onClick={() => closeAll()}
+          variant="contained"
+          fullWidth
+        >
           닫기
         </Button>
       </Paper>
